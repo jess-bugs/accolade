@@ -5,44 +5,61 @@
 
 /* For Firefox */
 html {
-  scrollbar-width: none; /* Hides scrollbar */
-  -ms-overflow-style: none; /* For Internet Explorer/Edge */
+  scrollbar-width: none;
+  /* Hides scrollbar */
+  -ms-overflow-style: none;
+  /* For Internet Explorer/Edge */
 }
+
+
+
+
 
 
 .sidebar {
-    height: 100%;
-    width: 250px;
-    position: fixed;
-    overflow-y: scroll;
-    top: 0;
-    left: 0;
-    padding: 10px;
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  overflow-y: scroll;
+  top: 0;
+  left: 0;
+  padding: 10px;
 }
 
 .content {
-    height: 100% !important;
-    margin-left: 250px !important;
-    width: auto !important;
-    overflow-y: auto;
-    overflow-x: hidden;
+  height: 100% !important;
+  margin-left: 250px !important;
+  width: auto !important;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 
 
 
 .standard_circle_image {
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    object-fit: cover;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 
 .profile_pic {
-    height: 35px;
-    width: 35px;
-    border-radius: 50%;
-    object-fit: cover;
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
+@media screen and (max-width: 991px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+  }
+
+  .content {
+    margin-left: 0 !important;
+  }
+}

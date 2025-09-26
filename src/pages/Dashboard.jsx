@@ -34,12 +34,16 @@ const Dashboard = () => {
                 // dashboard pane
                 page === 'dashboard' ? <DashboardPane /> :
                 
+                // portals
                 page === 'portal' ? <Portals /> :
 
+                // site stat
                 page === 'site-stat' ? <SiteStat /> : 
 
+                // accounts
                 page === 'accounts' ? <Accounts /> :
 
+                // fallbback to Dashboard Pane
                 <DashboardPane />
                 
                 }
