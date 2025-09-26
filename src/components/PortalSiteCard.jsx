@@ -5,7 +5,7 @@ const PortalSiteCard = ({site_logo, site_name='A Website', site_description='No 
     return (
         <>
             <NavLink to={site_url} className="col-xl-4 text-decoration-none link link-dark">
-                <div className="h-100 rounded border border-muted p-2 shadow" style={{ minHeight: '200px' }}>
+                <div className="h-100 rounded theme-border-upper-right theme-border-black-left p-2 shadow" style={{ minHeight: '200px' }}>
 
                     {/* site logo and name */}
                     <div className="d-flex">
