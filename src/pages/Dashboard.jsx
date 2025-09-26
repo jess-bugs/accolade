@@ -4,9 +4,15 @@ import Sidebar from '../components/Sidebar'
 import SidebarItems from '../components/SidebarItems'
 import WorkspaceLogo from '../components/WorkspaceLogo'
 import Content from '../components/Content'
-import Portals from './Portals'
 import ProfilePic from '../assets/images/JessB.jpg';
 import NavBarBottom from '../components/NavBarBottom'
+
+
+// Content Panes
+import DashboardPane from '../panes/DashboardPane'
+import Portals from '../panes/Portals'
+import SiteStat from '../panes/SiteStat'
+import Accounts from '../panes/Accounts'
 
 const Dashboard = () => {
 
@@ -24,9 +30,19 @@ const Dashboard = () => {
 
             <Content>
 
-                {page === 'portal' && (
-                    <Portals />
-                )}
+                {
+                // dashboard pane
+                page === 'dashboard' ? <DashboardPane /> :
+                
+                page === 'portal' ? <Portals /> :
+
+                page === 'site-stat' ? <SiteStat /> : 
+
+                page === 'accounts' ? <Accounts /> :
+
+                <DashboardPane />
+                
+                }
 
 
             </Content>

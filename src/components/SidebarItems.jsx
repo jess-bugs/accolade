@@ -16,6 +16,7 @@ const SidebarItems = () => {
   const dir_path = useLocation();
   const [activeLink, setActiveLink] = useState("/dashboard");
 
+  console.log('Path: ' + dir_path.pathname)
 
   return (
     <>
