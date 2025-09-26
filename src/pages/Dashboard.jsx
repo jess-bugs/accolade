@@ -6,7 +6,7 @@ import WorkspaceLogo from '../components/WorkspaceLogo'
 import Content from '../components/Content'
 import ProfilePic from '../assets/images/JessB.jpg';
 import NavBarBottom from '../components/NavBarBottom'
-
+import Navbar from '../components/Navbar'
 
 // Content Panes
 import DashboardPane from '../panes/DashboardPane'
@@ -30,22 +30,25 @@ const Dashboard = () => {
 
             <Content>
 
+                <Navbar />
+
+
                 {
-                // dashboard pane
-                page === 'dashboard' ? <DashboardPane /> :
-                
-                // portals
-                page === 'portal' ? <Portals /> :
+                    // dashboard pane
+                    page === 'dashboard' ? <DashboardPane /> :
 
-                // site stat
-                page === 'site-stat' ? <SiteStat /> : 
+                        // portals
+                        page === 'portal' ? <Portals /> :
 
-                // accounts
-                page === 'accounts' ? <Accounts /> :
+                            // site stat
+                            page === 'site-stat' ? <SiteStat /> :
 
-                // fallbback to Dashboard Pane
-                <DashboardPane />
-                
+                                // accounts
+                                page === 'accounts' ? <Accounts /> :
+
+                                    // fallbback to Dashboard Pane
+                                    <DashboardPane />
+
                 }
 
 

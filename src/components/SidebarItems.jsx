@@ -19,10 +19,10 @@ const SidebarItems = () => {
 
   return (
     <>
-      <div className="p-3">
+      <div className="">
         {/* Dashboard */}
         <div className="mb-3 d-grid">
-          <NavLink onClick={() => setActiveLink('/dash/dashboard')} to={'/dash/dashboard'} className={activeLink === '/dash/dashboard' ? 'link link-light bg-dark p-2 rounded-5 text-decoration-none' : 'link link-dark p-2 rounded-5 text-decoration-none'}>
+          <NavLink  onClick={() => setActiveLink('/dash/dashboard')} to={'/dash/dashboard'} className={activeLink === '/dash/dashboard' ? 'link link-light bg-dark p-2 rounded-5 text-decoration-none' : 'link link-dark p-2 rounded-5 text-decoration-none'}>
             <FaEquals /> <span className="fw-bold w-100">Dashboard</span>
           </NavLink>
         </div>

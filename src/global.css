@@ -63,3 +63,43 @@ html {
     margin-left: 0 !important;
   }
 }
+
+
+
+.theme-bg {
+  background-color: #00b0e3;
+}
+
+.theme-color {
+  color: #00b0e3;
+}
+
+.theme-border {
+  border: 1px solid #00b0e3;
+}
+
+
+
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory; /* For smooth snap */
+  gap: 1rem; /* Space between cards */
+  padding: 1rem;
+  scrollbar-width: thin; /* For Firefox */
+}
+
+.carousel::-webkit-scrollbar {
+  height: 8px; /* Horizontal scrollbar */
+}
+
+.carousel::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.carousel::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
