@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import SidebarItems from '../components/SidebarItems'
 import WorkspaceLogo from '../components/WorkspaceLogo'
+import AccoladeLogo from '../components/AccoladeLogo'
 import Content from '../components/Content'
 import ProfilePic from '../assets/images/JessB.jpg';
 import NavBarBottom from '../components/NavBarBottom'
@@ -21,7 +22,7 @@ const Dashboard = () => {
     return (
         <>
             <Sidebar>
-                <WorkspaceLogo />
+                <AccoladeLogo />
                 <hr className='p-0 mb-4' />
                 <SidebarItems />
                 <NavBarBottom />
