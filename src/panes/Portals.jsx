@@ -187,7 +187,7 @@ const Portals = () => {
 
                         {/* loads all portals */}
                         {portals.map((portal, index) => (
-                            <PortalSiteCard key={index} site_url={portal.URL} site_logo={'/src/assets/portal-logos/' + portal.Logo} site_name={portal.Site} site_description={portal.Description} />
+                            <PortalSiteCard key={index} site_url={portal.URL} site_logo={'https://accoladeapi.jessbaggs.com/portal-logos/' + portal.Logo} site_name={portal.Site} site_description={portal.Description} />
                         ))}
 
                         
