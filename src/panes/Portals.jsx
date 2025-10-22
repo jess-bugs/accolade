@@ -15,10 +15,14 @@ const Portals = () => {
 
     const MySwal = withReactContent(Swal);
 
+
+
+    const [portals, setPortals] = useState([]);
+
     useEffect(() => {
 
         axios.get('https://accoladeapi.jessbaggs.com/api/portals')
-        .then((response) => console.log(response.data))
+        .then((response) => setPortals(response.data))
         .catch((error) => console.error('Error:', error))
 
     }, []);
@@ -71,6 +75,10 @@ const Portals = () => {
 
 
     let site_description = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum soluta nobis ratione labore minima numquam modi eos odio doloribus vitae!'
+
+
+
+
 
     return (
         <div className="p-2">
@@ -165,12 +173,12 @@ const Portals = () => {
             {!createNote && (
                 <div className="mt-5">
                     <div className="row g-2">
-                        <PortalSiteCard site_url='https://google.com/' site_logo={BrandLogo} site_name="Guacamole Portal" site_description={site_description} />
-                        <PortalSiteCard site_url='https://google.com/' site_logo={SiteLogo} site_name="aaPanel Web Host" site_description={site_description} />
-                        <PortalSiteCard site_url='https://google.com/' site_logo={SiteLogo} site_name="Proxmox" site_description={site_description} />
-                        <PortalSiteCard site_url='https://google.com/' site_logo={SiteLogo} site_name="Landing Page" site_description={site_description} />
-                        <PortalSiteCard site_logo={SiteLogo} site_name="Sandbox" />
 
+                        {portals.map((portal, index) => (
+
+                        <PortalSiteCard site_url={portal.URL} site_logo={'/src/assets/portal-logos/' + portal.Logo} site_name={portal.Site} site_description={portal.Description} />
+                        ))}
+                        
                         {/* data-bs-toggle="modal" data-bs-target="#exampleModal" */}
                         <div onClick={() => setCreateNote(true)} style={{ cursor: 'pointer', minHeight: '200px' }} className="col-xl-4 text-decoration-none link link-dark">
                             <div style={{ border: '2px dashed grey' }} className="h-100 rounded d-flex flex-column">
