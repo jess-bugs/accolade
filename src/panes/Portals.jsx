@@ -7,23 +7,29 @@ import { use, useState, useEffect } from 'react'
 import axios from 'axios';
 
 import { FaPlusCircle } from "react-icons/fa";
+import { SlRefresh } from "react-icons/sl";
+
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 
 const Portals = () => {
 
+
+
     const MySwal = withReactContent(Swal);
-
-
 
     const [portals, setPortals] = useState([]);
 
-    useEffect(() => {
-
+    let fetch_portals = () => {
         axios.get('https://accoladeapi.jessbaggs.com/api/portals')
-        .then((response) => setPortals(response.data))
-        .catch((error) => console.error('Error:', error))
+            .then((response) => setPortals(response.data))
+            .catch((error) => console.error('Error:', error))
+
+    }
+
+    useEffect(() => {
+        fetch_portals();
 
     }, []);
 
@@ -43,17 +49,20 @@ const Portals = () => {
 
 
     // function to send New Portal to API endpoint
-    let createNewPortal = () => {
+    let createNewPortal = (e) => {
+        e.preventDefault();
 
-        const params = new URLSearchParams();
-        params.append('site_name', siteName);
-        params.append('site_description', siteDescription);
-        params.append('site_URL', defaultProtocol + url);
-        params.append('site_Logo', siteLogo.name);
+        const formData = new FormData();
+        formData.append('site_name', siteName);
+        formData.append('site_description', siteDescription);
+        formData.append('site_URL', defaultProtocol + url);
 
-
-        axios.post('https://accoladeapi.jessbaggs.com/api/create-new-portal', params, {
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        if(siteLogo) {
+            formData.append('site_Logo', siteLogo);
+        }
+        
+        axios.post('https://accoladeapi.jessbaggs.com/api/create-new-portal', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
         })
             .then(response => {
                 console.log(response.data);
@@ -64,7 +73,12 @@ const Portals = () => {
                         icon: 'success'
                     });
 
+                    // close Create Portal Block
                     setCreateNote(false);
+
+                    // load all portals
+                    fetch_portals();
+
                 }
             })
             .catch(error => {
@@ -73,39 +87,38 @@ const Portals = () => {
     }
 
 
-
-    let site_description = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum soluta nobis ratione labore minima numquam modi eos odio doloribus vitae!'
-
-
-
-
-
     return (
         <div className="p-2">
-            <h2 className="fw-bold">Manage Portals</h2>
+            <div className="d-flex align-items-center">
+                <h2 className="fw-bold">Manage Portals</h2>
+
+                <div className="ms-auto">
+                    <button onClick={fetch_portals} className="btn btn-sm btn-primary">
+                        Refresh
+                    </button>
+                </div>
+            </div>
 
             {/* create portal div */}
             {createNote && (
                 <div className="h-100 d-flex flex-column">
                     <div  >
-                        <form>
+                        <form onSubmit={createNewPortal}>
 
                             {/* create portal <div> */}
                             <div className="rounded h-100 d-flex flex-column theme-border-upper-right theme-border-black-left p-3 col-lg-6 mx-auto mt-5">
                                 <h2 className="fw-bold">Create Portal</h2>
 
-
-
                                 {/* site name */}
                                 <div className="mt-4">
                                     <p className='mb-0'>Site Name</p>
-                                    <input onChange={(e) => { setSiteName(e.target.value) }} className="form-control form-control-sm" type="text" placeholder='My Website'></input>
+                                    <input required onChange={(e) => { setSiteName(e.target.value) }} className="form-control form-control-sm" type="text" placeholder='My Website'></input>
                                 </div>
 
                                 {/* site logo */}
                                 <div className="mt-4">
                                     <p className='mb-1'>Site Logo</p>
-                                    <input onChange={fileChange} className="form-control" type="file"></input>
+                                    <input required onChange={fileChange} className="form-control" type="file"></input>
                                     <small>.ico, .png, .jpg</small>
                                 </div>
 
@@ -140,7 +153,7 @@ const Portals = () => {
                                                 </NavLink>
                                             </li>
                                         </ul>
-                                        <input
+                                        <input required
                                             onChange={(e) => { setURL(e.target.value) }}
                                             type="text"
                                             className="form-control"
@@ -149,13 +162,10 @@ const Portals = () => {
                                     </div>
                                 </div>
 
-
-
-
                                 <div className="mt-auto">
                                     <div className="d-flex justify-content-end">
                                         <button onClick={() => setCreateNote(false)} className="btn btn-danger me-3">Cancel</button>
-                                        <button type='button' onClick={createNewPortal} className="btn theme-btn-default">Save</button>
+                                        <button className="btn theme-btn-default">Save</button>
                                     </div>
                                 </div>
 
@@ -171,15 +181,16 @@ const Portals = () => {
 
 
             {!createNote && (
-                <div className="mt-5">
+                <div className="mt-4">
                     <div className="row g-2">
 
-                        {portals.map((portal, index) => (
 
-                        <PortalSiteCard site_url={portal.URL} site_logo={'/src/assets/portal-logos/' + portal.Logo} site_name={portal.Site} site_description={portal.Description} />
+                        {/* loads all portals */}
+                        {portals.map((portal, index) => (
+                            <PortalSiteCard key={index} site_url={portal.URL} site_logo={'/src/assets/portal-logos/' + portal.Logo} site_name={portal.Site} site_description={portal.Description} />
                         ))}
+
                         
-                        {/* data-bs-toggle="modal" data-bs-target="#exampleModal" */}
                         <div onClick={() => setCreateNote(true)} style={{ cursor: 'pointer', minHeight: '200px' }} className="col-xl-4 text-decoration-none link link-dark">
                             <div style={{ border: '2px dashed grey' }} className="h-100 rounded d-flex flex-column">
                                 <div className="text-center my-auto">
