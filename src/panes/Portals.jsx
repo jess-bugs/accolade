@@ -2,19 +2,74 @@ import SiteLogo from '../assets/images/JessB.jpg'
 import BrandLogo from '../assets/images/WorkspaceLogo.png'
 import { NavLink } from 'react-router-dom'
 import PortalSiteCard from '../components/PortalSiteCard'
-import { use, useState } from 'react'
+import { use, useState, useEffect } from 'react'
+
+import axios from 'axios';
 
 import { FaPlusCircle } from "react-icons/fa";
-
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 
 const Portals = () => {
 
+    const MySwal = withReactContent(Swal);
+
+    useEffect(() => {
+
+        axios.get('https://accoladeapi.jessbaggs.com/api/portals')
+        .then((response) => console.log(response.data))
+        .catch((error) => console.error('Error:', error))
+
+    }, []);
+
 
     const [createNote, setCreateNote] = useState(false);
-    const [defaultProtocol, setDefaultProtocol] = useState('http');
+    const [defaultProtocol, setDefaultProtocol] = useState('https://');
 
-    let site_name = 'Site Name'
+    const [siteName, setSiteName] = useState('');
+    const [siteDescription, setSiteDescription] = useState('');
+    const [url, setURL] = useState('');
+    const [siteLogo, setSiteLogo] = useState(null);
+
+    const fileChange = (event) => {
+        setSiteLogo(event.target.files[0]);
+    }
+
+
+
+    // function to send New Portal to API endpoint
+    let createNewPortal = () => {
+
+        const params = new URLSearchParams();
+        params.append('site_name', siteName);
+        params.append('site_description', siteDescription);
+        params.append('site_URL', defaultProtocol + url);
+        params.append('site_Logo', siteLogo.name);
+
+
+        axios.post('https://accoladeapi.jessbaggs.com/api/create-new-portal', params, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        })
+            .then(response => {
+                console.log(response.data);
+                if (response.data.success) {
+                    MySwal.fire({
+                        title: <strong>Success!</strong>,
+                        html: <i>Portal was created successfully!</i>,
+                        icon: 'success'
+                    });
+
+                    setCreateNote(false);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+
+
     let site_description = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum soluta nobis ratione labore minima numquam modi eos odio doloribus vitae!'
 
     return (
@@ -24,7 +79,7 @@ const Portals = () => {
             {/* create portal div */}
             {createNote && (
                 <div className="h-100 d-flex flex-column">
-                    <div  style={{marginTop : '5%'}}>
+                    <div  >
                         <form>
 
                             {/* create portal <div> */}
@@ -36,20 +91,20 @@ const Portals = () => {
                                 {/* site name */}
                                 <div className="mt-4">
                                     <p className='mb-0'>Site Name</p>
-                                    <input className="form-control form-control-sm" type="text" placeholder='My Website'></input>
+                                    <input onChange={(e) => { setSiteName(e.target.value) }} className="form-control form-control-sm" type="text" placeholder='My Website'></input>
                                 </div>
 
                                 {/* site logo */}
                                 <div className="mt-4">
                                     <p className='mb-1'>Site Logo</p>
-                                    <input className="form-control" type="file"></input>
+                                    <input onChange={fileChange} className="form-control" type="file"></input>
                                     <small>.ico, .png, .jpg</small>
                                 </div>
 
                                 {/* site description */}
                                 <div className="mt-4">
                                     <p className='mb-0'>Description</p>
-                                    <input className="form-control form-control-sm" type="text"></input>
+                                    <input onChange={(e) => { setSiteDescription(e.target.value) }} className="form-control form-control-sm" type="text"></input>
                                 </div>
 
                                 {/* site URL */}
@@ -67,17 +122,18 @@ const Portals = () => {
 
                                         <ul className="dropdown-menu">
                                             <li>
-                                                <a onClick={() => setDefaultProtocol('http://')} className="dropdown-item" href="#">
+                                                <NavLink onClick={() => setDefaultProtocol('http://')} className='dropdown-item bg-light text-dark'>
                                                     http://
-                                                </a>
+                                                </NavLink>
                                             </li>
                                             <li>
-                                                <a onClick={() => setDefaultProtocol('https://')} className="dropdown-item" href="#">
+                                                <NavLink onClick={() => setDefaultProtocol('https://')} className='dropdown-item bg-light text-dark'>
                                                     https://
-                                                </a>
+                                                </NavLink>
                                             </li>
                                         </ul>
                                         <input
+                                            onChange={(e) => { setURL(e.target.value) }}
                                             type="text"
                                             className="form-control"
                                             aria-label="Text input with dropdown button"
@@ -89,10 +145,9 @@ const Portals = () => {
 
 
                                 <div className="mt-auto">
-                                    {/* cancel button */}
                                     <div className="d-flex justify-content-end">
                                         <button onClick={() => setCreateNote(false)} className="btn btn-danger me-3">Cancel</button>
-                                        <button onClick={() => setCreateNote(false)} className="btn btn-primary">Save</button>
+                                        <button type='button' onClick={createNewPortal} className="btn theme-btn-default">Save</button>
                                     </div>
                                 </div>
 
@@ -130,7 +185,7 @@ const Portals = () => {
                     </div>
                 </div>
             )}
-            
+
         </div>
     )
 }
