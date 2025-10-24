@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom'
 import { ImSpinner } from "react-icons/im";
 
@@ -8,6 +8,7 @@ import BrandLogo from '/src/assets/images/AccoladeLogo.webp';
 import { IoPerson } from "react-icons/io5";
 import { IoIosKey } from "react-icons/io";
 import axios from 'axios';
+import { motion } from "framer-motion";
 
 
 
@@ -15,14 +16,34 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      navigate('/dash/dashboard');
+    }
+
+  }, [])
+
+
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [loginErr, setLoginError] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const [animConfig, setAnimConfig] = useState({
+    animate: {},
+    transition: {},
+  });
+
+  const [submitted, setSubmitted] = useState(false);
+
 
   let submitLogin = (e) => {
     e.preventDefault();
+
+    setSubmitted(true);
 
     const data = {
       username,
@@ -32,10 +53,31 @@ const Login = () => {
     axios.post('https://accoladeapi.jessbaggs.com/login', data)
       .then(response => {
 
+
+
         // if login fails...
         if (!response.data.success) {
           setLoginError(response.data.error);
-          setLoginStat('text-danger');
+
+
+
+          // shake animation
+          setAnimConfig({
+            animate: { x: [0, -8, 8, -8, 8, 0] },
+            transition: { duration: 0.4, ease: "easeInOut" },
+          });
+
+
+          // reset shake animation
+          setTimeout(() => {
+            setAnimConfig({
+              animate: {},
+              transition: {},
+            });
+            setSubmitted(false);
+          }, 500)
+
+
           return;
         }
 
@@ -45,12 +87,14 @@ const Login = () => {
           setLoginError('');
           setLoginSuccess(true);
 
+
           // store the token ID
           localStorage.setItem('token', response.data.tokenID);
 
 
           const delay = setTimeout(() => {
             navigate('/dash/dashboard');
+            setSubmitted(false);
           }, 2000);
 
 
@@ -68,7 +112,7 @@ const Login = () => {
     <>
       <div className="my-auto text-center">
 
-        <img src={BrandLogo} style={{height : '120px'}} alt="brand-logo" />
+        <img src={BrandLogo} style={{ height: '120px' }} alt="brand-logo" />
         <h2 className="fw-bold text-center">Admin Login</h2>
         {/* <NavLink to={'/dash/dashboard'} className={"btn btn-primary text-center"}>Login</NavLink> */}
 
@@ -85,23 +129,38 @@ const Login = () => {
             </div>
 
             {/* password */}
-            <div className="mb-3 col-xl-6 mx-auto">
-              <p className="fs-5 mb-1">Password</p>
+            <div className=" col-xl-6 mx-auto">
+              <p className="fs-5">Password</p>
               <div className="input-group ">
                 <span className="input-group-text" id="basic-addon1"><IoIosKey /></span>
                 <input onChange={(e) => setPassword(e.target.value)} required type="password" className="form-control form-control-sm" />
               </div>
 
               {/* login error */}
-              <span className={'text-danger'}>{loginErr}</span>
+              <div className="">
+                {!loginSuccess && (
+                  <motion.div
+                    initial={{ x: 0 }}
+                    animate={animConfig.animate}
+                    transition={animConfig.transition}
+                    style={{
+                      color: "red",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    <span style={{ fontSize: '13px' }} className={'text-danger'}>{loginErr}</span>
+                  </motion.div>
+                )}
+              </div>
+
 
 
               {/* login success */}
               {loginSuccess && (
                 <span className='text-success' style={{ fontSize: '12px' }}>Login success. Redirecting...
 
-                  <div class="spinner-border spinner-border-sm text-success ms-2" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                  <div className="spinner-border spinner-border-sm text-success ms-2" role="status">
+                    <span className="visually-hidden">Loading...</span>
                   </div>
                 </span>
               )}
@@ -110,7 +169,7 @@ const Login = () => {
 
             {/* Login Button */}
             <div className="my-4 col-xl-6 mx-auto d-grid">
-              <button className="btn btn-sm btn-primary">Login</button>
+              <button disabled={submitted} className="btn btn-sm btn-primary">Login</button>
             </div>
 
           </form>
