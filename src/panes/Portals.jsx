@@ -16,9 +16,6 @@ import withReactContent from 'sweetalert2-react-content';
 const Portals = () => {
 
 
-
-    const MySwal = withReactContent(Swal);
-
     const [portals, setPortals] = useState([]);
 
     let fetch_portals = () => {
@@ -57,21 +54,23 @@ const Portals = () => {
         formData.append('site_description', siteDescription);
         formData.append('site_URL', defaultProtocol + url);
 
-        if(siteLogo) {
+        if (siteLogo) {
             formData.append('site_Logo', siteLogo);
         }
-        
+
         axios.post('https://accoladeapi.jessbaggs.com/api/create-new-portal', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         })
             .then(response => {
                 console.log(response.data);
                 if (response.data.success) {
-                    MySwal.fire({
-                        title: <strong>Success!</strong>,
-                        html: <i>Portal was created successfully!</i>,
-                        icon: 'success'
-                    });
+
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Portal Inserted!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    })
 
                     // close Create Portal Block
                     setCreateNote(false);
@@ -85,6 +84,36 @@ const Portals = () => {
                 console.error(error);
             });
     }
+
+
+
+    // function to send Remove Portal to API endpoint
+    let removePortal = (portal_id) => {
+        Swal.fire({
+            title: 'Remove Portal',
+            text: 'Would you like to remove this Portal?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'OK'
+        })
+            .then((result) => {
+                if (result.isConfirmed) {
+
+                    axios.delete('https://accoladeapi.jessbaggs.com/api/remove-portal/' + portal_id)
+                        .then(response => {
+
+                            if (response.data.success) {
+                                setPortals(response.data.data);
+                            }
+
+                        })
+                        .catch(err => console.log('Error: ', err))
+
+                }
+            });
+    }
+
+
 
 
     return (
@@ -118,8 +147,8 @@ const Portals = () => {
                                 {/* site logo */}
                                 <div className="mt-4">
                                     <p className='mb-1'>Site Logo</p>
-                                    <input required onChange={fileChange} className="form-control" type="file"></input>
-                                    <small>.ico, .png, .jpg</small>
+                                    <input accept='.webp, .jpg, .jpeg, .png' required onChange={fileChange} className="form-control" type="file"></input>
+                                    <small>.webp, .png, .jpg, .jpeg</small>
                                 </div>
 
                                 {/* site description */}
@@ -187,10 +216,10 @@ const Portals = () => {
 
                         {/* loads all portals */}
                         {portals.map((portal, index) => (
-                            <PortalSiteCard key={index} site_url={portal.URL} site_logo={'https://accoladeapi.jessbaggs.com/portal-logos/' + portal.Logo} site_name={portal.Site} site_description={portal.Description} />
+                            <PortalSiteCard key={index} site_url={portal.URL} site_logo={'https://accoladeapi.jessbaggs.com/portal-logos/' + portal.Logo} site_name={portal.Site} site_description={portal.Description} portal_id={portal.ID} removePortal={removePortal} />
                         ))}
 
-                        
+
                         <div onClick={() => setCreateNote(true)} style={{ cursor: 'pointer', minHeight: '200px' }} className="col-xl-4 text-decoration-none link link-dark">
                             <div style={{ border: '2px dashed grey' }} className="h-100 rounded d-flex flex-column">
                                 <div className="text-center my-auto">
