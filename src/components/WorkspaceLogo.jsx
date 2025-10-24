@@ -1,5 +1,5 @@
 import React from 'react'
-import BrandLogo from '../assets/images/WorkspaceLogo.png';
+import BrandLogo from '../assets/images/AccoladeLogo.webp';
 
 
 const WorkspaceLogo = ({height}) => {

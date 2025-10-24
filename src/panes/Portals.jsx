@@ -1,6 +1,6 @@
 import SiteLogo from '../assets/images/JessB.jpg'
 import BrandLogo from '../assets/images/WorkspaceLogo.png'
-import { NavLink } from 'react-router-dom'
+import { useNavigate, NavLink } from 'react-router-dom'
 import PortalSiteCard from '../components/PortalSiteCard'
 import { use, useState, useEffect } from 'react'
 
@@ -15,6 +15,8 @@ import withReactContent from 'sweetalert2-react-content';
 
 const Portals = () => {
 
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
 
     const [portals, setPortals] = useState([]);
 
@@ -26,6 +28,12 @@ const Portals = () => {
     }
 
     useEffect(() => {
+        
+        if(!token) {
+            navigate('/login');
+            return;
+        }
+        
         fetch_portals();
 
     }, []);

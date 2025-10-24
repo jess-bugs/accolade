@@ -1,5 +1,6 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import SidebarItems from '../components/SidebarItems'
 import WorkspaceLogo from '../components/WorkspaceLogo'
@@ -18,6 +19,17 @@ import Accounts from '../panes/Accounts'
 const Dashboard = () => {
 
     const { page } = useParams();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+
+        const token = localStorage.getItem('token');
+
+        if(!token) {
+            navigate('/login');
+        }
+
+    }, [navigate])
 
     return (
         <>

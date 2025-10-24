@@ -1,7 +1,31 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import SidebarItems from './SidebarItems'
+import Swal from 'sweetalert2';
+
+import { IoPower } from "react-icons/io5";
+
 
 const Navbar = () => {
+
+    const navigate = useNavigate();
+
+    let logout = () => {
+        Swal.fire({
+            title: 'Logout?',
+            text: 'Do you really want to logout?',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        })
+        .then((result) => {
+            if(result.isConfirmed) {
+
+                localStorage.removeItem('token');
+                navigate('/login');
+            }
+        })
+    }
+
     return (
         <div className="">
             <nav className="navbar navbar-expand-lg bg-body-tertiary border-bottom border-muted">
@@ -29,7 +53,12 @@ const Navbar = () => {
 
                 </div>
 
-                <div className="ms-auto d-none d-lg-block">
+                <div className="ms-auto d-none d-lg-flex">
+                    <div className="me-2">
+                        <button onClick={logout} className="btn btn-outline-danger rounded-5 me-2">
+                            <IoPower /> Logout
+                        </button>
+                    </div>
                     <button className="btn btn-dark rounded-5 me-2">
                         Hello
                     </button>
