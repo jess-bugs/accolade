@@ -7,6 +7,7 @@ const ErrorPage = () => {
         <div className="p-1 my-auto">
             <h2 className="fw-bold text-center">An error occured.</h2>
             <p className="mb-1">Troubleshoot the ff:</p>
+
             <ul>
                 <li>Check your internet connection.</li>
                 <li>Check for typos: <b>ww.jessbaggs.com</b> instead of <b>www.jessbaggs.com</b></li>
