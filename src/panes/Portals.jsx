@@ -21,19 +21,25 @@ const Portals = () => {
     const [portals, setPortals] = useState([]);
 
     let fetch_portals = () => {
-        axios.get('https://accoladeapi.jessbaggs.com/api/portals')
+
+        axios.get('https://accoladeapi.jessbaggs.com/api/portals',
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
             .then((response) => setPortals(response.data))
             .catch((error) => console.error('Error:', error))
-
     }
 
     useEffect(() => {
-        
-        if(!token) {
+
+        if (!token) {
             navigate('/login');
             return;
         }
-        
+
         fetch_portals();
 
     }, []);
