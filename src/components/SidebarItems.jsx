@@ -16,7 +16,7 @@ const SidebarItems = () => {
 
   const dir_path = useLocation();
   const [activeLink, setActiveLink] = useState(dir_path.pathname);
-
+  
 
   return (
     <>

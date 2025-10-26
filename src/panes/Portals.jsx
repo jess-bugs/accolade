@@ -29,7 +29,18 @@ const Portals = () => {
                 }
             }
         )
-            .then((response) => setPortals(response.data))
+            .then(response => {
+
+                // if(!response.data.success) {
+                //     console.log(response.data);
+                //     localStorage.removeItem('token');
+                //     navigate('/login');
+                //     return;
+                // }
+
+                setPortals(response.data)
+            })
+
             .catch((error) => console.error('Error:', error))
     }
 
@@ -64,8 +75,12 @@ const Portals = () => {
 
 
     // function to send New Portal to API endpoint
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    
     let createNewPortal = (e) => {
         e.preventDefault();
+
+        setIsSubmitted(true);
 
         const formData = new FormData();
         formData.append('site_name', siteName);
@@ -106,6 +121,8 @@ const Portals = () => {
 
                 // load all portals
                 fetch_portals();
+
+                setIsSubmitted(false);
 
             })
             .catch(error => {
@@ -180,7 +197,7 @@ const Portals = () => {
                         <form onSubmit={createNewPortal}>
 
                             {/* create portal <div> */}
-                            <div className="rounded h-100 d-flex flex-column theme-border-upper-right theme-border-black-left p-3 col-lg-6 mx-auto mt-5">
+                            <div className="rounded h-100 d-flex flex-column border-top border-bottom border-muted p-3 col-lg-6 mx-auto mt-5">
                                 <h2 className="fw-bold">Create Portal</h2>
 
                                 {/* site name */}
@@ -239,7 +256,7 @@ const Portals = () => {
                                 <div className="mt-auto">
                                     <div className="d-flex justify-content-end">
                                         <button onClick={() => setCreateNote(false)} className="btn btn-danger me-3">Cancel</button>
-                                        <button className="btn theme-btn-default">Save</button>
+                                        <button disabled={isSubmitted} className="btn theme-btn-default">Save</button>
                                     </div>
                                 </div>
 

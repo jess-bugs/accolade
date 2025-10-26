@@ -1,7 +1,8 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import SidebarItems from './SidebarItems'
 import Swal from 'sweetalert2';
+import AccoladeLogo from '/src/assets/images/AccoladeLogo.webp'
 
 import { IoPower } from "react-icons/io5";
 
@@ -31,7 +32,9 @@ const Navbar = () => {
             <nav className="navbar navbar-expand-lg bg-body-tertiary border-bottom border-muted">
                 <div className="container-fluid d-lg-none">
 
-                    <a className="navbar-brand" href="#">Navbar</a>
+                    <a className="navbar-brand" href="/"><img src={AccoladeLogo} style={{height : '40px'}} alt="" /></a>
+                    {/* <NavLink><img src={AccoladeLogo} style={{height : '40px'}} alt="" /></NavLink> */}
+                    
 
                     <button
                         className="navbar-toggler"
@@ -47,7 +50,7 @@ const Navbar = () => {
 
                     <div className="collapse navbar-collapse " id="workspace-nav">
                         <div className="mt-2">
-                            <SidebarItems />
+                            <SidebarItems />                            
                         </div>
                     </div>
 
