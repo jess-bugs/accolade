@@ -79,26 +79,34 @@ const Portals = () => {
         axios.post('https://accoladeapi.jessbaggs.com/api/create-new-portal', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                Authorization : `Bearer ${token}`
             }
         })
             .then(response => {
                 console.log(response.data);
-                if (response.data.success) {
-
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Portal Inserted!',
-                        icon: 'success',
+                if (!response.data.success) {
+                    return Swal.fire({
+                        title: 'Request Error',
+                        text: 'Error: ' + response.data.error,
+                        icon: 'error',
                         confirmButtonText: 'OK'
                     })
-
-                    // close Create Portal Block
-                    setCreateNote(false);
-
-                    // load all portals
-                    fetch_portals();
-
                 }
+
+
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Portal Inserted!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                })
+
+                // close Create Portal Block
+                setCreateNote(false);
+
+                // load all portals
+                fetch_portals();
+
             })
             .catch(error => {
                 console.error(error);
