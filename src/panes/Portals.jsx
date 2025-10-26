@@ -42,6 +42,10 @@ const Portals = () => {
 
         fetch_portals();
 
+        const interval = setInterval(fetch_portals, 1000);
+
+        return () => clearInterval(interval);
+
     }, []);
 
 
@@ -73,7 +77,9 @@ const Portals = () => {
         }
 
         axios.post('https://accoladeapi.jessbaggs.com/api/create-new-portal', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
         })
             .then(response => {
                 console.log(response.data);
@@ -103,6 +109,7 @@ const Portals = () => {
 
     // function to send Remove Portal to API endpoint
     let removePortal = (portal_id) => {
+
         Swal.fire({
             title: 'Remove Portal',
             text: 'Would you like to remove this Portal?',
@@ -113,12 +120,28 @@ const Portals = () => {
             .then((result) => {
                 if (result.isConfirmed) {
 
-                    axios.delete('https://accoladeapi.jessbaggs.com/api/remove-portal/' + portal_id)
+                    axios.delete('https://accoladeapi.jessbaggs.com/api/remove-portal/' + portal_id,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        }
+                    )
                         .then(response => {
 
-                            if (response.data.success) {
-                                setPortals(response.data.data);
+                            console.log(response.data);
+
+                            if (!response.data.success) {
+                                Swal.fire({
+                                    title: 'Request Error',
+                                    text: 'Error: ' + response.data.error,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                })
+                                return;
                             }
+
+                            setPortals(response.data.data);
 
                         })
                         .catch(err => console.log('Error: ', err))
