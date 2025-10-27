@@ -2,16 +2,45 @@ import React from 'react'
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom'
 import { FaArrowRightLong } from "react-icons/fa6";
+import axios from 'axios';
 
 
-const PortalSiteCard = ({ 
-    site_logo, site_name = 'A Website', 
-    site_description = 'No description provided.', 
-    site_url = 'site-1', 
-    portal_id, 
+const PortalSiteCard = ({
+    site_logo,
+    site_name = 'A Website',
+    site_description = 'No description provided.',
+    site_url = 'site-1',
+    portal_id,
     removePortal }) => {
 
-    
+    const token = localStorage.getItem('token');
+    const [imageSrc, setImageSrc] = useState(null);
+
+    useEffect(() => {
+
+        const fetch_image = async () => {
+            try {
+
+                const response = await axios.get(site_logo,
+                    {
+                        responseType: 'blob',
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    }
+                );
+
+                const imgURL = URL.createObjectURL(response.data);
+                setImageSrc(imgURL);
+
+            } catch (error) {
+                console.error('Image fetching error: ', error);
+            }
+        }
+
+        fetch_image();
+
+    }, [])
 
 
 
@@ -22,7 +51,7 @@ const PortalSiteCard = ({
 
                     {/* site logo and name */}
                     <div className="d-flex">
-                        <img src={site_logo} className="standard_circle_image theme-border me-2" style={{ height: '30px', width: '30px' }} alt="Site-Logo" />
+                        <img src={imageSrc} className="standard_circle_image theme-border me-2" style={{ height: '30px', width: '30px' }} alt="Site-Logo" />
 
                         <p className="fw-bold fs-5">
                             {site_name}
@@ -42,7 +71,7 @@ const PortalSiteCard = ({
 
                     <div className="mt-auto d-flex justify-content-end">
                         <div className="me-2">
-                            <button onClick={()=>removePortal(portal_id)} className="btn btn-danger btn-sm">Remove</button>
+                            <button onClick={() => removePortal(portal_id)} className="btn btn-danger btn-sm">Remove</button>
                         </div>
 
                         <div className="me-2">
