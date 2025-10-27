@@ -62,9 +62,6 @@ const Navbar = () => {
                             <IoPower /> Logout
                         </button>
                     </div>
-                    <button className="btn btn-dark rounded-5 me-2">
-                        Hello
-                    </button>
                 </div>
             </nav>
         </div>

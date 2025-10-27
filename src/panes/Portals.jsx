@@ -1,22 +1,26 @@
 import SiteLogo from '../assets/images/JessB.jpg'
-import BrandLogo from '../assets/images/WorkspaceLogo.png'
+import AccoladeLogo from '/src/assets/images/AccoladeLogo.webp'
 import { useNavigate, NavLink } from 'react-router-dom'
 import PortalSiteCard from '../components/PortalSiteCard'
-import { use, useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import axios from 'axios';
 
 import { FaPlusCircle } from "react-icons/fa";
-import { SlRefresh } from "react-icons/sl";
 
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+
 
 
 const Portals = () => {
+    const closeModal = useRef(null);
 
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
+
+
+    // for portal logo file input
+    const fileInputRef = useRef(null);
 
     const [portals, setPortals] = useState([]);
 
@@ -31,12 +35,14 @@ const Portals = () => {
         )
             .then(response => {
 
+                // console.log(response.data);
+
                 // if(!response.data.success) {
-                //     console.log(response.data);
                 //     localStorage.removeItem('token');
                 //     navigate('/login');
                 //     return;
                 // }
+
 
                 setPortals(response.data)
             })
@@ -45,6 +51,7 @@ const Portals = () => {
     }
 
     useEffect(() => {
+
 
         if (!token) {
             navigate('/login');
@@ -56,6 +63,8 @@ const Portals = () => {
         const interval = setInterval(fetch_portals, 1000);
 
         return () => clearInterval(interval);
+
+
 
     }, []);
 
@@ -76,7 +85,7 @@ const Portals = () => {
 
     // function to send New Portal to API endpoint
     const [isSubmitted, setIsSubmitted] = useState(false);
-    
+
     let createNewPortal = (e) => {
         e.preventDefault();
 
@@ -94,7 +103,7 @@ const Portals = () => {
         axios.post('https://accoladeapi.jessbaggs.com/api/create-new-portal', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                Authorization : `Bearer ${token}`
+                Authorization: `Bearer ${token}`
             }
         })
             .then(response => {
@@ -124,10 +133,22 @@ const Portals = () => {
 
                 setIsSubmitted(false);
 
+                // close the modal
+                closeModal.current.click();
+
+
+                // reset fields
+                resetPortalFields();
+
+
+
             })
             .catch(error => {
                 console.error(error);
             });
+
+
+
     }
 
 
@@ -177,6 +198,15 @@ const Portals = () => {
 
 
 
+    function resetPortalFields() {
+        setSiteName('');
+        setSiteDescription('');
+        setURL('');
+        setSiteLogo(null);
+        fileInputRef.current.value = '';
+        setDefaultProtocol('https://');
+    }
+
 
     return (
         <div className="p-2">
@@ -184,8 +214,8 @@ const Portals = () => {
                 <h2 className="fw-bold">Manage Portals</h2>
 
                 <div className="ms-auto">
-                    <button onClick={fetch_portals} className="btn btn-sm btn-primary">
-                        Refresh
+                    <button data-bs-toggle="modal" data-bs-target="#create-portal-modal" className="btn theme-btn-default">
+                        <FaPlusCircle className="" /> Create Portal
                     </button>
                 </div>
             </div>
@@ -262,8 +292,6 @@ const Portals = () => {
 
                             </div>
                         </form>
-
-
                     </div>
 
 
@@ -275,6 +303,9 @@ const Portals = () => {
                 <div className="mt-4">
                     <div className="row g-2">
 
+                        <div className="d-grid">
+                            <button data-bs-toggle="modal" data-bs-target="#create-portal-modal" className="btn theme-btn-default d-lg-none"><FaPlusCircle/> Create Portal</button>
+                        </div>
 
                         {/* loads all portals */}
                         {portals.map((portal, index) => (
@@ -282,7 +313,8 @@ const Portals = () => {
                         ))}
 
 
-                        <div onClick={() => setCreateNote(true)} style={{ cursor: 'pointer', minHeight: '200px' }} className="col-xl-4 text-decoration-none link link-dark">
+                        {/* onClick={() => setCreateNote(true)} */}
+                        <div data-bs-toggle="modal" data-bs-target="#create-portal-modal" style={{ cursor: 'pointer', minHeight: '200px' }} className="d-none d-lg-block col-xl-4 text-decoration-none link link-dark">
                             <div style={{ border: '2px dashed grey' }} className="h-100 rounded d-flex flex-column">
                                 <div className="text-center my-auto">
                                     <h1 className="display-3">
@@ -292,9 +324,121 @@ const Portals = () => {
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             )}
+
+
+
+
+
+            <div className="modal fade" id="create-portal-modal" tabIndex="-1" data-bs-backdrop="static">
+                <div className="modal-dialog modal-lg modal-dialog-centered">
+                    <div className="modal-content">
+
+
+                        <div className="modal-body p-2">
+                            <div className="row g-1">
+                                <div className="col-md-5 border border-muted rounded d-none d-lg-block">
+                                    <div className="text-center">
+                                        <img src={AccoladeLogo} style={{ height: '120px' }} alt="accolade-logo" />
+                                    </div>
+                                    <div className="mt-2">
+                                        <h4 className="text-center">
+                                            Create New Portal
+                                        </h4>
+                                        <p className="text-center">This page lets you create a new portal.</p>
+                                    </div>
+                                </div>
+
+                                <div className="col-lg-7">
+                                    <div className="d-flex">
+                                        <h4 className="fw-bold d-lg-none">Create Portal</h4>
+                                        <div className="ms-auto">
+                                            <button onClick={resetPortalFields} type="button" ref={closeModal} className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                    </div>
+
+                                    <form onSubmit={createNewPortal} className='p-2'>
+
+                                        {/* create portal <div> */}
+                                        <div className="rounded h-100 d-flex flex-column">
+                                            {/* site name */}
+                                            <div className="">
+                                                <p className='mb-0'>Site Name</p>
+                                                <input value={siteName} required onChange={(e) => { setSiteName(e.target.value) }} className="form-control form-control-sm" type="text" placeholder='My Website'></input>
+                                            </div>
+
+                                            {/* site logo */}
+                                            <div className="mt-4">
+                                                <p className='mb-1'>Site Logo</p>
+                                                <input ref={fileInputRef} accept='.webp, .jpg, .jpeg, .png' required onChange={fileChange} className="form-control" type="file"></input>
+                                                <small>.webp, .png, .jpg, .jpeg</small>
+                                            </div>
+
+                                            {/* site description */}
+                                            <div className="mt-4">
+                                                <p className='mb-0'>Description</p>
+                                                <input value={siteDescription} onChange={(e) => { setSiteDescription(e.target.value) }} className="form-control form-control-sm" type="text"></input>
+                                            </div>
+
+                                            {/* site URL */}
+                                            <div className="mt-4">
+                                                <p className='mb-0'>Site URL</p>
+                                                <div className="input-group mb-3">
+                                                    <button
+                                                        className="btn btn-outline-secondary dropdown-toggle"
+                                                        type="button"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false"
+                                                    >
+                                                        {defaultProtocol}
+                                                    </button>
+
+                                                    <ul className="dropdown-menu">
+                                                        <li>
+                                                            <NavLink onClick={() => setDefaultProtocol('http://')} className='dropdown-item bg-light text-dark'>
+                                                                http://
+                                                            </NavLink>
+                                                        </li>
+                                                        <li>
+                                                            <NavLink onClick={() => setDefaultProtocol('https://')} className='dropdown-item bg-light text-dark'>
+                                                                https://
+                                                            </NavLink>
+                                                        </li>
+                                                    </ul>
+                                                    <input required
+                                                        value={url}
+                                                        onChange={(e) => { setURL(e.target.value) }}
+                                                        type="text"
+                                                        className="form-control"
+                                                        aria-label="Text input with dropdown button"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="mt-auto">
+                                                <div className="row g-1">
+                                                    <div className="col d-grid">
+                                                        <button type='button' data-bs-dismiss="modal" className="btn btn-sm btn-outline-danger">Cancel</button>
+                                                    </div>
+                                                    <div className="col d-grid">
+                                                        <button disabled={isSubmitted} className="btn btn-sm theme-btn-default">Save</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
 
         </div>
     )
