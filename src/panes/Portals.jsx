@@ -197,7 +197,12 @@ const Portals = () => {
     }
 
 
+    let updatePortal = (site_name) => {
+        console.log('Site Name: ', site_name);
+    }
 
+
+    
     function resetPortalFields() {
         setSiteName('');
         setSiteDescription('');
@@ -310,18 +315,14 @@ const Portals = () => {
                         {/* loads all portals */}
                         {portals.map((portal, index) => (
                             <PortalSiteCard 
-                            key={index} 
+                            key={portal.ID} 
                             site_url={portal.URL} 
                             site_logo={'https://accoladeapi.jessbaggs.com/portal-logos/' + portal.Logo} 
                             site_name={portal.Site} 
                             site_description={portal.Description} 
                             portal_id={portal.ID} 
                             removePortal={removePortal} 
-                            portalInfo={
-                                {
-                                    siteName : portal.Site
-                                }
-                            }
+                            updatePortal={updatePortal}
                             />
                         ))}
 

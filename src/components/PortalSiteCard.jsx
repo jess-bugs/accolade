@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom'
 import { FaArrowRightLong } from "react-icons/fa6";
 import axios from 'axios';
 
+import UpdatePortalModal from './UpdatePortalModal';
 import AccoladeLogo from './AccoladeLogo';
 import { event } from 'jquery';
 import Swal from 'sweetalert2';
@@ -22,7 +23,7 @@ const PortalSiteCard = ({
     site_url = 'site-1',
     portal_id,
     removePortal,
-    portalInfo
+    updatePortal
 }) => {
 
 
@@ -31,14 +32,19 @@ const PortalSiteCard = ({
     const [defaultProtocol, setDefaultProtocol] = useState('https://');
 
 
-    const [siteName, setSiteName] = useState('');
+    const [siteName, setSiteName] = useState(site_name);
+
+
+    const [showModal, setShowModal] = useState(false);
+    const openModal = () => setShowModal(true);
+    const closeModal = () => setShowModal(false);
 
 
 
     function update_portal() {
 
-        setSiteName(portalInfo.siteName);
-        console.log('Portal Site: ', siteName);
+        console.log('Portal Site: ', site_name);
+
     }
 
 
@@ -85,13 +91,17 @@ const PortalSiteCard = ({
 
         fetch_image();
 
-    }, [])
+
+        setSiteName(site_name);
+
+    }, [site_name])
 
 
 
     return (
         <>
             <div className="col-sm-6 col-xl-4 text-decoration-none link link-dark">
+
                 <div className="h-100 d-flex flex-column rounded theme-border-upper-right theme-border-black-left p-2 shadow" style={{ minHeight: '200px' }}>
 
                     {/* site logo and name */}
@@ -103,10 +113,15 @@ const PortalSiteCard = ({
                         </p>
 
                         <div className="ms-auto d-flex">
-                            <span style={{ cursor: 'pointer' }} data-bs-toggle="modal" data-bs-target="#update-portal-modal" className='fs-5 me-2'><CiEdit /></span>
+                            {/* Edit */}
+                            <span onClick={openModal} style={{ cursor: 'pointer' }} data-bs-toggle="offcanvas" data-bs-target="#update-portal-offcanvas"  className='fs-5 me-2'><CiEdit /></span>
+
+                            {/* Delete */}
                             <span style={{ cursor: 'pointer' }} onClick={() => removePortal(portal_id)} className='fs-5 text-danger me-2'><MdDelete /></span>
+
+                            {/* Copy Link */}
                             <span title='Copy URL' style={{ cursor: 'pointer' }} onClick={handleCopy} className='fs-5'><CiLink /></span>
-                            {/* <NavLink target='_blank' to={site_url} className={'link link-info'}>Visit Portal <FaArrowRightLong /></NavLink> */}
+
                         </div>
                     </div>
 
@@ -136,112 +151,33 @@ const PortalSiteCard = ({
 
 
 
+            <UpdatePortalModal show={showModal} onClose={closeModal} site_name={site_name}/>
+
 
             {/* modal for updating Portal Information */}
+            
             <div className="modal fade" id="update-portal-modal" tabIndex="-1" data-bs-backdrop="static">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content">
 
 
-                        <div className="modal-body p-2">
-                            <div className="row g-1">
-                                <div className="col-md-5 border border-muted rounded d-none d-lg-block">
-                                    <div className="text-center">
-                                        <AccoladeLogo height={'120px'} />
-                                    </div>
-                                    <div className="mt-2">
-                                        <h4 className="text-center">
-                                            Update Portal Information
-                                        </h4>
-                                        <p className="text-center">This page lets you update your portal.</p>
-                                    </div>
-                                </div>
-
-                                <div className="col-lg-7">
-                                    <div className="d-flex">
-                                        <h5 className="fw-bold">Portal ID : <span className="fw-normal">{portal_id}</span></h5>
-                                        <div className="ms-auto">
-                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                    </div>
-
-                                    <form className='p-2'>
-
-                                        {/* create portal <div> */}
-                                        <div className="rounded h-100 d-flex flex-column">
-
-                                            {/* site name */}
-                                            <div className="">
-                                                <p className='mb-0'>Site Name</p>
-                                                <input value={portalInfo.siteName} onChange={(e) => { setSiteName(e.target.value) }} required className="form-control form-control-sm" type="text" placeholder='My Website'></input>
-                                            </div>
-
-                                            {/* site logo */}
-                                            <div className="mt-4">
-                                                <p className='mb-1'>Site Logo</p>
-                                                <input accept='.webp, .jpg, .jpeg, .png' required className="form-control" type="file"></input>
-                                                <small>.webp, .png, .jpg, .jpeg</small>
-                                            </div>
-
-                                            {/* site description */}
-                                            <div className="mt-4">
-                                                <p className='mb-0'>Description</p>
-                                                <input className="form-control form-control-sm" type="text"></input>
-                                            </div>
-
-                                            {/* site URL */}
-                                            <div className="mt-4">
-                                                <p className='mb-0'>Site URL</p>
-                                                <div className="input-group mb-3">
-                                                    <button
-                                                        className="btn btn-outline-secondary dropdown-toggle"
-                                                        type="button"
-                                                        data-bs-toggle="dropdown"
-                                                        aria-expanded="false"
-                                                    >
-                                                        {defaultProtocol}
-                                                    </button>
-
-                                                    <ul className="dropdown-menu">
-                                                        <li>
-                                                            <NavLink onClick={() => setDefaultProtocol('http://')} className='dropdown-item bg-light text-dark'>
-                                                                http://
-                                                            </NavLink>
-                                                        </li>
-                                                        <li>
-                                                            <NavLink onClick={() => setDefaultProtocol('https://')} className='dropdown-item bg-light text-dark'>
-                                                                https://
-                                                            </NavLink>
-                                                        </li>
-                                                    </ul>
-                                                    <input required
-                                                        type="text"
-                                                        className="form-control"
-                                                        aria-label="Text input with dropdown button"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="mt-auto">
-                                                <div className="row g-1">
-                                                    <div className="col d-grid">
-                                                        <button type='button' data-bs-dismiss="modal" className="btn btn-sm btn-outline-danger">Cancel</button>
-                                                    </div>
-                                                    <div className="col d-grid">
-                                                        <button className="btn btn-sm theme-btn-default">Save</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
+                        
                     </div>
                 </div>
             </div>
+
+
+
+            {/* offcanvas */}
+            {/* <div class="offcanvas offcanvas-start" tabindex="-1" id="update-portal-offcanvas" aria-labelledby="offcanvasExampleLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <p className="fw-bold">{siteName}</p>
+                </div>
+            </div> */}
 
         </>
     )

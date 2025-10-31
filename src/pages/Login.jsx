@@ -124,7 +124,7 @@ const Login = () => {
               <p className="fs-5 mb-1">Username</p>
               <div className="input-group mb-3">
                 <span className="input-group-text"><IoPerson /></span>
-                <input onChange={(e) => setUsername(e.target.value)} required type="text" className="form-control form-control-sm" />
+                <input autoFocus onChange={(e) => setUsername(e.target.value)} required type="text" className="form-control form-control-sm" />
               </div>
             </div>
 
