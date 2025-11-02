@@ -326,8 +326,7 @@ const Portals = () => {
                         ))}
 
 
-                        {/* onClick={() => setCreateNote(true)} */}
-                        <div data-bs-toggle="modal" data-bs-target="#create-portal-modal" style={{ cursor: 'pointer', minHeight: '200px' }} className="d-none d-lg-block col-xl-4 text-decoration-none link link-dark">
+                        {/* <div data-bs-toggle="modal" data-bs-target="#create-portal-modal" style={{ cursor: 'pointer', minHeight: '200px' }} className="d-none d-lg-block col-xl-4 text-decoration-none link link-dark">
                             <div style={{ border: '2px dashed grey' }} className="h-100 rounded d-flex flex-column">
                                 <div className="text-center my-auto">
                                     <h1 className="display-3">
@@ -336,7 +335,7 @@ const Portals = () => {
                                     <p className="text-center">Add Another Portal</p>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
                     </div>
                 </div>
